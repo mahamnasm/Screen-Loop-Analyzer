@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-background: var(--background);
+
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ColorHunt Palette Tokens (202940 4b4038 9a8678 caaa98) */
+  --color-ch-navy: #202940;
+  --color-ch-espresso: #4b4038;
+  --color-ch-sandstone: #9a8678;
+  --color-ch-almond: #caaa98;
+  --color-ch-cream: #fbf9f6;
+  --color-ch-cream-muted: #f3ede4;
+  --color-ch-border: #e2d8cd;
+
+  /* Brand Palette Utilities */
+  --color-navy: #202940;
+  --color-navy-dark: #161c2e;
+  --color-cream: #fbf9f6;
+  --color-cream-muted: #f3ede4;
+  --color-warm-accent: #caaa98;
+  --color-warm-accent-dark: #9a8678;
+  --color-warm-gold: #caaa98;
+  --color-slate-dark: #202940;
+  --color-espresso: #4b4038;
+  --color-sandstone: #9a8678;
+  --color-almond: #caaa98;
+
+  /* Backward-compatible utility classes */
+  --color-maroon: #4b4038;
+  --color-mahogany: #202940;
+  --color-sage: #9a8678;
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.978 0.008 60);         /* Warm Almond Cream #fbf9f6 */
+  --foreground: oklch(0.26 0.045 265);          /* Deep Midnight Navy #202940 */
+  --card: oklch(0.995 0.004 60);                /* Clean Crisp Surface #ffffff */
+  --card-foreground: oklch(0.26 0.045 265);     /* Deep Midnight Navy */
+  --popover: oklch(0.995 0.004 60);
+  --popover-foreground: oklch(0.26 0.045 265);
+  --primary: oklch(0.26 0.045 265);             /* Deep Midnight Navy #202940 */
+  --primary-foreground: oklch(0.985 0.005 60);  /* Clean Light Cream */
+  --secondary: oklch(0.945 0.015 60);           /* Muted Almond Tint #f3ede4 */
+  --secondary-foreground: oklch(0.36 0.022 55); /* Deep Espresso Brown #4b4038 */
+  --muted: oklch(0.945 0.015 60);                /* Soft Sandstone Wash #f3ede4 */
+  --muted-foreground: oklch(0.55 0.030 60);     /* Muted Sandstone #9a8678 */
+  --accent: oklch(0.74 0.042 55);               /* Soft Warm Almond #caaa98 */
+  --accent-foreground: oklch(0.26 0.045 265);   /* Deep Navy Text */
+  --destructive: oklch(0.52 0.18 25);           /* Warm Crimson */
+  --destructive-foreground: oklch(0.98 0.005 60);
+  --success: oklch(0.58 0.12 148);              /* Olive Emerald */
+  --warning: oklch(0.74 0.042 55);              /* Warm Almond Gold #caaa98 */
+  --border: oklch(0.885 0.018 60);              /* Warm Border #e2d8cd */
+  --input: oklch(0.885 0.018 60);
+  --ring: oklch(0.74 0.042 55);                 /* Almond Focus Ring */
+
+  --chart-1: oklch(0.26 0.045 265);             /* Deep Navy #202940 */
+  --chart-2: oklch(0.36 0.022 55);              /* Deep Espresso #4b4038 */
+  --chart-3: oklch(0.61 0.032 60);              /* Muted Sandstone #9a8678 */
+  --chart-4: oklch(0.74 0.042 55);              /* Soft Almond #caaa98 */
+  --chart-5: oklch(0.58 0.12 148);              /* Olive Emerald */
+
+  --sidebar: oklch(0.26 0.045 265);             /* Deep Midnight Navy #202940 */
+  --sidebar-foreground: oklch(0.978 0.008 60);   /* Warm Cream #fbf9f6 */
+  --sidebar-primary: oklch(0.74 0.042 55);      /* Soft Warm Almond #caaa98 */
+  --sidebar-primary-foreground: oklch(0.26 0.045 265);
+  --sidebar-accent: oklch(0.32 0.040 265);      /* Lighter Navy Shade */
+  --sidebar-accent-foreground: oklch(0.98 0.005 60);
+  --sidebar-border: oklch(0.32 0.035 265);
+  --sidebar-ring: oklch(0.74 0.042 55);
+}
+
+.dark {
+  --background: oklch(0.20 0.04 265);           /* Midnight Base #161c2e */
+  --foreground: oklch(0.978 0.008 60);          /* Warm Cream #fbf9f6 */
+  --card: oklch(0.26 0.045 265);                /* Deep Navy Card #202940 */
+  --card-foreground: oklch(0.978 0.008 60);
+  --popover: oklch(0.26 0.045 265);
+  --popover-foreground: oklch(0.978 0.008 60);
+  --primary: oklch(0.74 0.042 55);              /* Soft Warm Almond #caaa98 */
+  --primary-foreground: oklch(0.26 0.045 265);
+  --secondary: oklch(0.36 0.022 55);            /* Deep Espresso #4b4038 */
+  --secondary-foreground: oklch(0.978 0.008 60);
+  --muted: oklch(0.30 0.035 265);
+  --muted-foreground: oklch(0.72 0.025 60);     /* Soft Sandstone */
+  --accent: oklch(0.61 0.032 60);               /* Sandstone #9a8678 */
+  --accent-foreground: oklch(0.98 0.005 60);
+  --destructive: oklch(0.58 0.18 25);
+  --destructive-foreground: oklch(0.98 0.005 60);
+  --border: oklch(0.34 0.035 265);
+  --input: oklch(0.34 0.035 265);
+  --ring: oklch(0.74 0.042 55);
+  --chart-1: oklch(0.74 0.042 55);
+  --chart-2: oklch(0.61 0.032 60);
+  --chart-3: oklch(0.36 0.022 55);
+  --chart-4: oklch(0.58 0.12 148);
+  --chart-5: oklch(0.85 0.04 60);
+  --sidebar: oklch(0.18 0.04 265);              /* Deepest Navy #161c2e */
+  --sidebar-foreground: oklch(0.978 0.008 60);
+  --sidebar-primary: oklch(0.74 0.042 55);
+  --sidebar-primary-foreground: oklch(0.26 0.045 265);
+  --sidebar-accent: oklch(0.26 0.045 265);
+  --sidebar-accent-foreground: oklch(0.98 0.005 60);
+  --sidebar-border: oklch(0.30 0.035 265);
+  --sidebar-ring: oklch(0.74 0.042 55);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-script {
+    font-family: 'Caveat', 'Segoe Script', 'Brush Script MT', cursive;
+  }
+
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.25s ease;
+  }
+
+  .glass-pill:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(202, 170, 152, 0.6);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .careerbridge-dot-grid {
+    background-image: radial-gradient(rgba(202, 170, 152, 0.28) 1.2px, transparent 1.2px);
+    background-size: 16px 16px;
+  }
+
+  .careerbridge-card-elevation {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .careerbridge-card-elevation:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -6px rgba(32, 41, 64, 0.12), 0 0 0 1px rgba(202, 170, 152, 0.3);
+  }
+}
+
