@@ -259,12 +259,12 @@ export function CompanyWorkspaceView({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">Open Requisitions</span>
-            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
-              <Briefcase className="h-4 w-4 text-[#202940]" />
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">Open Requisitions</span>
+            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] dark:text-[#caaa98] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
+              <Briefcase className="h-4 w-4 text-[#202940] dark:text-[#caaa98]" />
             </div>
           </div>
-          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] font-display">
+          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] dark:text-white font-display">
             {activeJobs.length}
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
@@ -274,12 +274,12 @@ export function CompanyWorkspaceView({
 
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">Total Applicants</span>
-            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
-              <Users className="h-4 w-4 text-[#202940]" />
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">Total Applicants</span>
+            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] dark:text-[#caaa98] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
+              <Users className="h-4 w-4 text-[#202940] dark:text-[#caaa98]" />
             </div>
           </div>
-          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] font-display">
+          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] dark:text-white font-display">
             {isolatedCandidates.length}
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
@@ -289,12 +289,12 @@ export function CompanyWorkspaceView({
 
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">In Interview Stages</span>
-            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
-              <UserCheck className="h-4 w-4 text-[#202940]" />
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">In Interview Stages</span>
+            <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] dark:text-[#caaa98] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
+              <UserCheck className="h-4 w-4 text-[#202940] dark:text-[#caaa98]" />
             </div>
           </div>
-          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] font-display">
+          <div className="mt-2 text-3xl font-bold tracking-tight text-[#202940] dark:text-white font-display">
             {interviewingCount}
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
@@ -304,7 +304,7 @@ export function CompanyWorkspaceView({
 
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">Hired Talent</span>
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">Hired Talent</span>
             <div className="h-8 w-8 rounded-xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center group-hover:scale-110 transition border border-emerald-500/20">
               <TrendingUp className="h-4 w-4 text-emerald-700" />
             </div>

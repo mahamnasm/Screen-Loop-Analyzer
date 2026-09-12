@@ -76,6 +76,8 @@ export type AuditAction =
   | "COMPANY_REJECTED"
   | "PLUGIN_TOGGLED"
   | "INTEGRATION_CONFIGURED"
+  | "JOB_ALERT_DISPATCHED"
+  | "GOOGLE_MEET_STARTED"
   | "ADMIN_ACTION";
 
 export interface AuditLogItem {

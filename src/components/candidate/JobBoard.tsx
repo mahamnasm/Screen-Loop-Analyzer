@@ -10,7 +10,10 @@ import {
   DollarSign,
   Filter,
   GraduationCap,
+  Mail,
   MapPin,
+  Users,
+  FileText,
   Search,
   ShieldCheck,
   Sparkles,
@@ -32,14 +35,16 @@ import { useAts } from "@/lib/ats-store";
 
 import { ApplyModal } from "./ApplyModal";
 import { CvImproverModal } from "./CvImproverModal";
+import { JobAlertsModal } from "./JobAlertsModal";
 import { JobCvMatchModal } from "./JobCvMatchModal";
 import { JobDetailsModal } from "./JobDetailsModal";
 
 export function JobBoard() {
-  const { activeJobs, jobs, isolatedJobs, candidateApplications, currentUser, toggleSaveJob } =
+  const { activeJobs, jobs, isolatedJobs, candidateApplications, currentUser, toggleSaveJob, isolatedCandidates } =
     useAts();
 
   // Search & Filter state
+  const [alertsOpen, setAlertsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState<string>("all");
   const [selectedDept, setSelectedDept] = useState<string>("all");
@@ -243,25 +248,38 @@ export function JobBoard() {
     <div className="space-y-6">
       {/* Search & Header Bar */}
       <div className="rounded-2xl border bg-gradient-to-b from-card via-card to-muted/30 p-6 sm:p-7 shadow-xs">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-primary/5 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>
+                {isEmployerRole
+                  ? `${currentUser.company || "Company"} Isolated Requisition Board`
+                  : "Verified Pakistani Employer Job Portal"}
+              </span>
+            </div>
+            <h2 className="mt-2.5 font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               {isEmployerRole
-                ? `${currentUser.company || "Company"} Isolated Requisition Board`
-                : "Verified Pakistani Employer Job Portal"}
-            </span>
+                ? `Job Openings & Requisitions (${baseJobs.length})`
+                : "Explore Open Vacancies Across Pakistan"}
+            </h2>
+            <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              {isEmployerRole
+                ? `Internal scoped job requisitions for ${currentUser.company || "your organization"}. Candidates applying to these roles will appear in your hiring pipeline.`
+                : "Discover roles in Karachi, Lahore, Islamabad, and across Pakistan. Benchmark your CV match score and view transparent monthly PKR compensation."}
+            </p>
           </div>
-          <h2 className="mt-2.5 font-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-            {isEmployerRole
-              ? `Job Openings & Requisitions (${baseJobs.length})`
-              : "Explore Open Vacancies Across Pakistan"}
-          </h2>
-          <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            {isEmployerRole
-              ? `Internal scoped job requisitions for ${currentUser.company || "your organization"}. Candidates applying to these roles will appear in your hiring pipeline.`
-              : "Discover roles in Karachi, Lahore, Islamabad, and across Pakistan. Benchmark your CV match score and view transparent monthly PKR compensation."}
-          </p>
+
+          {!isEmployerRole && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAlertsOpen(true)}
+              className="h-9 text-xs gap-2 border-[#caaa98]/60 bg-background hover:bg-primary/5 shadow-2xs text-foreground font-semibold"
+            >
+              <Mail className="h-4 w-4 text-primary" /> Email Job Alerts
+            </Button>
+          )}
         </div>
 
         {/* 5-Column Search & Filters */}
@@ -387,19 +405,29 @@ export function JobBoard() {
                     )}
                   </div>
 
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleSaveJob(job.id)}
-                    className="h-7 w-7 p-0 text-muted-foreground hover:text-primary"
-                    title={isSaved ? "Remove from saved" : "Save this job"}
-                  >
-                    {isSaved ? (
-                      <BookmarkCheck className="h-4 w-4 text-primary fill-primary/20" />
-                    ) : (
-                      <Bookmark className="h-4 w-4" />
-                    )}
-                  </Button>
+                  {isEmployerRole ? (
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 flex items-center gap-1 font-semibold"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Active Role
+                    </Badge>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleSaveJob(job.id)}
+                      className="h-7 w-7 p-0 text-muted-foreground hover:text-primary"
+                      title={isSaved ? "Remove from saved" : "Save this job"}
+                    >
+                      {isSaved ? (
+                        <BookmarkCheck className="h-4 w-4 text-primary fill-primary/20" />
+                      ) : (
+                        <Bookmark className="h-4 w-4" />
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 {/* Job Title */}
@@ -490,35 +518,63 @@ export function JobBoard() {
 
               {/* Action Buttons */}
               <div className="mt-5 flex items-center justify-between gap-2 pt-3 border-t">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleOpenMatch(job)}
-                  className="text-xs h-8 gap-1"
-                >
-                  <Sparkles className="h-3 w-3 text-primary" />
-                  Compare CV
-                </Button>
+                {isEmployerRole ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenDetails(job)}
+                      className="text-xs h-8 gap-1.5 font-medium border-border/80"
+                    >
+                      <FileText className="h-3.5 w-3.5 text-primary" />
+                      Job Specs
+                    </Button>
 
-                <div className="flex gap-1.5">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenDetails(job)}
-                    className="text-xs h-8"
-                  >
-                    Details
-                  </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const count = isolatedCandidates.filter((c) => c.jobId === job.id).length;
+                        handleOpenDetails(job);
+                      }}
+                      className="text-xs h-8 gap-1.5 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xs"
+                    >
+                      <Users className="h-3.5 w-3.5" />
+                      Applicants ({isolatedCandidates.filter((c) => c.jobId === job.id).length})
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenMatch(job)}
+                      className="text-xs h-8 gap-1"
+                    >
+                      <Sparkles className="h-3 w-3 text-primary" />
+                      Compare CV
+                    </Button>
 
-                  <Button
-                    size="sm"
-                    disabled={isClosed}
-                    onClick={() => handleOpenApply(job)}
-                    className="text-xs h-8"
-                  >
-                    {isClosed ? "Closed" : hasApplied ? "Applied ✓" : "Apply Now"}
-                  </Button>
-                </div>
+                    <div className="flex gap-1.5">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenDetails(job)}
+                        className="text-xs h-8"
+                      >
+                        Details
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        disabled={isClosed}
+                        onClick={() => handleOpenApply(job)}
+                        className="text-xs h-8"
+                      >
+                        {isClosed ? "Closed" : hasApplied ? "Applied ✓" : "Apply Now"}
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           );
@@ -547,6 +603,8 @@ export function JobBoard() {
       />
 
       <CvImproverModal job={improverJob} open={improverOpen} onOpenChange={setImproverOpen} />
+
+      <JobAlertsModal open={alertsOpen} onOpenChange={setAlertsOpen} />
     </div>
   );
 }

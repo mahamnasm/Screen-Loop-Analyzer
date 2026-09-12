@@ -6,6 +6,7 @@ import {
   Boxes,
   Brain,
   Briefcase,
+  GraduationCap,
   Building2,
   Calendar,
   ChevronLeft,
@@ -197,14 +198,13 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
           {
             group: "Security & Governance",
             items: [
-              { id: "security", label: "Security Dashboard", icon: ShieldAlert },
-              { id: "system-health", label: "System Health", icon: Activity },
               {
-                id: "audit-logs",
-                label: "Audit & Access Logs",
-                icon: Shield,
+                id: "security",
+                label: "Security & Audit Trail",
+                icon: ShieldAlert,
                 badge: auditLogs.length,
               },
+              { id: "system-health", label: "System Health", icon: Activity },
               { id: "plugins", label: "Plugin Governance", icon: Boxes },
               { id: "integrations", label: "API Integrations", icon: Link2 },
             ],
@@ -228,33 +228,69 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
     }
   };
 
+  // Contextual Role Hub Indicator (eliminates duplication with top Navbar)
+  const getHubInfo = (role: UserRole) => {
+    switch (role) {
+      case "candidate":
+        return {
+          title: "Candidate Hub",
+          subtitle: "Career & AI Workspaces",
+          icon: GraduationCap,
+          tone: "from-[#202940] to-[#4b4038] text-[#caaa98]",
+        };
+      case "hr":
+        return {
+          title: "Recruiter Suite",
+          subtitle: currentUser.company ? `${currentUser.company} ATS` : "Talent Acquisition",
+          icon: Users,
+          tone: "from-[#202940] to-[#3a3028] text-[#caaa98]",
+        };
+      case "company":
+        return {
+          title: "Enterprise Portal",
+          subtitle: currentUser.company ? `${currentUser.company} Workspace` : "Corporate Operations",
+          icon: Building2,
+          tone: "from-[#182035] to-[#202940] text-[#caaa98]",
+        };
+      case "admin":
+        return {
+          title: "Admin Console",
+          subtitle: "Platform Governance & RBAC",
+          icon: ShieldAlert,
+          tone: "from-[#202940] to-[#182035] text-[#caaa98]",
+        };
+    }
+  };
+
+  const hubInfo = getHubInfo(currentUser.role);
+  const HubIcon = hubInfo.icon;
+
   const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <div className="flex h-full flex-col justify-between overflow-y-auto bg-card border-r">
-      {/* Brand Header */}
-      <div className="p-4 border-b">
+    <div className="flex h-full flex-col justify-between overflow-y-auto bg-white/80 dark:bg-[#1a233a]/80 backdrop-blur-xl border-r border-[#e2d8cd]/70 dark:border-[#2d3854]/80 shadow-lg shadow-black/5 selection:bg-primary/20">
+      {/* Workspace Hub Indicator (Non-duplicate role context) */}
+      <div className="p-3.5 border-b border-[#e2d8cd]/60 dark:border-[#2d3854]/70 bg-white/40 dark:bg-black/10 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div
-            className="flex items-center gap-2.5 cursor-pointer"
+            className="flex items-center gap-2.5 cursor-pointer min-w-0"
             onClick={() => {
               onTabChange("default");
               if (isMobile) setMobileOpen(false);
             }}
+            title={hubInfo.title}
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#202940] to-[#4b4038] text-[#caaa98] border border-[#caaa98]/40 shadow-md shadow-[#202940]/20 p-1.5">
-              <CareerBridgeLogo className="h-full w-full text-[#caaa98]" />
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr ${hubInfo.tone} border border-[#caaa98]/40 shadow-sm p-2`}>
+              <HubIcon className="h-full w-full text-[#caaa98]" />
             </div>
             {(!collapsed || isMobile) && (
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-display text-base font-bold tracking-tight text-foreground">
-                    Screenloop
+                  <span className="font-display text-sm font-bold tracking-tight text-[#202940] dark:text-white truncate">
+                    {hubInfo.title}
                   </span>
-                  <span className="rounded bg-[#202940]/10 px-1 py-0.2 font-mono text-[9px] font-bold text-[#4b4038] uppercase border border-[#caaa98]/40">
-                    CareerBridge
-                  </span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                 </div>
-                <p className="text-[10px] text-muted-foreground line-clamp-1">
-                  Applicant Tracking & AI Evaluation
+                <p className="text-[10px] text-[#4b4038] dark:text-[#caaa98] font-medium truncate">
+                  {hubInfo.subtitle}
                 </p>
               </div>
             )}
@@ -264,7 +300,7 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-muted-foreground hover:text-foreground hidden lg:flex"
+              className="h-7 w-7 text-muted-foreground hover:text-foreground hidden lg:flex shrink-0"
               onClick={() => setCollapsed(!collapsed)}
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
@@ -280,7 +316,7 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground"
+              className="h-8 w-8 text-muted-foreground shrink-0"
               onClick={() => setMobileOpen(false)}
             >
               <X className="h-4 w-4" />
@@ -288,28 +324,28 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
           )}
         </div>
 
-        {/* Company context snippet if HR or Company */}
+        {/* Scoped Company badge if employer */}
         {(!collapsed || isMobile) && currentUser.company && (
-          <div className="mt-3 rounded-lg border bg-muted/40 p-2 text-xs">
+          <div className="mt-2.5 rounded-lg border border-[#e2d8cd]/60 dark:border-[#2d3854]/60 bg-white/60 dark:bg-card/60 p-2 text-xs backdrop-blur-xs">
             <div className="flex items-center gap-1.5">
               <Building2 className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span className="font-semibold text-foreground truncate">{currentUser.company}</span>
+              <span className="font-bold text-[#202940] dark:text-white truncate">{currentUser.company}</span>
             </div>
             {currentUser.companyRole && (
-              <p className="text-[10px] text-muted-foreground mt-0.5 pl-5">
-                Role: {currentUser.companyRole}
+              <p className="text-[10px] text-[#4b4038] dark:text-[#caaa98] mt-0.5 pl-5 font-mono">
+                {currentUser.companyRole}
               </p>
             )}
           </div>
         )}
       </div>
 
-      {/* Navigation Links */}
-      <div className="flex-1 px-3 py-4 space-y-6">
+      {/* Navigation Links with High Contrast & Glass Accents */}
+      <div className="flex-1 px-2.5 py-4 space-y-5">
         {navGroups.map((group, gIdx) => (
           <div key={gIdx} className="space-y-1">
             {(!collapsed || isMobile) && (
-              <p className="px-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 font-mono">
+              <p className="px-2 pb-1 text-[10.5px] font-extrabold uppercase tracking-wider text-[#4b4038] dark:text-[#caaa98] font-mono">
                 {group.group}
               </p>
             )}
@@ -323,10 +359,10 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
                     onTabChange(item.id);
                     if (isMobile) setMobileOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-all group ${
+                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all group ${
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-xs font-semibold"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                      ? "bg-primary text-primary-foreground shadow-sm font-bold"
+                      : "text-[#342e29] dark:text-[#f3ede4] hover:bg-white/60 dark:hover:bg-white/10 hover:text-foreground font-semibold"
                   }`}
                   title={collapsed && !isMobile ? item.label : undefined}
                 >
@@ -335,7 +371,7 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
                       className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${
                         isActive
                           ? "text-primary-foreground"
-                          : "text-muted-foreground group-hover:text-foreground"
+                          : "text-[#4b4038] dark:text-[#caaa98] group-hover:text-foreground"
                       }`}
                     />
                     {(!collapsed || isMobile) && <span className="truncate">{item.label}</span>}
@@ -343,10 +379,10 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
 
                   {(!collapsed || isMobile) && item.badge !== undefined && (
                     <span
-                      className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold font-mono ${
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold font-mono ${
                         isActive
-                          ? "bg-primary-foreground/20 text-primary-foreground"
-                          : item.badgeTone || "bg-muted text-muted-foreground"
+                          ? "bg-primary-foreground/25 text-primary-foreground"
+                          : item.badgeTone || "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground border border-primary/20"
                       }`}
                     >
                       {item.badge}
@@ -359,30 +395,18 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
         ))}
       </div>
 
-      {/* Profile & Switcher Footer */}
-      <div className="p-3 border-t bg-muted/20 space-y-2">
-        {(!collapsed || isMobile) && (
-          <div className="rounded-xl border border-[#caaa98]/30 bg-gradient-to-tr from-[#202940] to-[#3a3028] p-2.5 text-white shadow-xs relative overflow-hidden">
-            <div className="flex items-center justify-between">
-              <span className="font-script text-xs text-[#caaa98]">Building Better Futures</span>
-              <CareerBridgeLogo className="h-3.5 w-3.5 text-[#caaa98]" />
-            </div>
-            <p className="text-[9.5px] text-white/70 mt-0.5 leading-tight">
-              Better Talent | Stronger Companies
-            </p>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2.5 p-1.5 rounded-xl bg-card border shadow-2xs">
+      {/* User Profile Footer & Sign Out */}
+      <div className="p-3 border-t border-[#e2d8cd]/60 dark:border-[#2d3854]/70 bg-white/40 dark:bg-black/10 backdrop-blur-md space-y-2">
+        <div className="flex items-center gap-2.5 p-1.5 rounded-xl bg-white/70 dark:bg-card/70 border border-[#e2d8cd]/60 dark:border-[#2d3854]/60 shadow-2xs backdrop-blur-xs">
           <img
             src={currentUser.avatar}
             alt={currentUser.name}
-            className="h-8 w-8 rounded-full border bg-muted object-cover shrink-0"
+            className="h-8 w-8 rounded-full border border-[#caaa98]/40 bg-muted object-cover shrink-0"
           />
           {(!collapsed || isMobile) && (
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-foreground truncate">{currentUser.name}</p>
-              <p className="text-[10px] text-muted-foreground truncate font-mono">
+              <p className="text-xs font-bold text-[#202940] dark:text-white truncate">{currentUser.name}</p>
+              <p className="text-[10px] text-[#4b4038] dark:text-[#caaa98] truncate font-mono">
                 @{currentUser.username} · {getRoleLabel(currentUser.role)}
               </p>
             </div>
@@ -390,22 +414,22 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
         </div>
 
         {(!collapsed || isMobile) && (
-          <div className="space-y-1.5 pt-1">
+          <div className="space-y-1.5 pt-0.5">
             {currentUser.role === "candidate" && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onTabChange("privacy-center")}
-                className="w-full h-7 text-[11px] gap-1 px-2 text-muted-foreground hover:text-foreground justify-center"
+                className="w-full h-7 text-[11px] gap-1 px-2 text-[#4b4038] dark:text-[#caaa98] hover:text-foreground hover:bg-white/40 justify-center font-medium"
               >
-                <Lock className="h-3 w-3 text-emerald-600" /> Privacy & Compliance Center
+                <Lock className="h-3 w-3 text-emerald-600" /> Privacy & Compliance
               </Button>
             )}
             <Button
               variant="outline"
               size="sm"
               onClick={logout}
-              className="w-full h-7 text-[11px] gap-1.5 px-2 border-border/80 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition font-medium"
+              className="w-full h-7 text-[11px] gap-1.5 px-2 border-[#e2d8cd] dark:border-[#2d3854] text-[#4b4038] dark:text-[#caaa98] hover:text-destructive hover:bg-destructive/10 transition font-bold"
             >
               <LogOut className="h-3 w-3" /> Sign Out
             </Button>

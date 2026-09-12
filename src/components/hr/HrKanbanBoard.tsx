@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Users,
+  Video,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,7 +47,25 @@ export function HrKanbanBoard() {
     moveCandidate,
     screenAll,
     triggerScreening,
+    currentUser,
+    logAuditEvent,
   } = useAts();
+
+  const handleLaunchGoogleMeet = () => {
+    const meetUrl = "https://meet.google.com/new";
+    window.open(meetUrl, "_blank", "noopener,noreferrer");
+    logAuditEvent({
+      userId: currentUser.id,
+      username: currentUser.username,
+      role: currentUser.role,
+      action: "GOOGLE_MEET_STARTED",
+      resource: "HR Kanban Board",
+      details: "Started instant Google Meet conference from Kanban toolbar",
+      severity: "info",
+      ip: "127.0.0.1",
+    });
+    toast.success("Google Meet conference room opened in a new tab!");
+  };
 
   // Filter & Search states
   const [searchQuery, setSearchQuery] = useState("");
@@ -256,6 +275,15 @@ export function HrKanbanBoard() {
               className="h-8 text-xs gap-1.5"
             >
               <Brain className="h-3.5 w-3.5 text-purple-600" /> AI Interview Prep
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleLaunchGoogleMeet}
+              className="h-8 text-xs gap-1.5 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 font-semibold"
+            >
+              <Video className="h-3.5 w-3.5 text-emerald-600" /> Start Google Meet
             </Button>
 
             <Button

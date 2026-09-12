@@ -9,7 +9,9 @@ import {
   MoveRight,
   Sparkles,
   User,
+  Video,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +44,24 @@ export function CandidateCard({
   onDragStart,
   onViewEvaluation,
 }: CandidateCardProps) {
-  const { jobs, moveCandidate } = useAts();
+  const { jobs, moveCandidate, currentUser, logAuditEvent } = useAts();
+
+  const handleStartGoogleMeet = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const meetUrl = candidate.interviews[0]?.meetingLink || "https://meet.google.com/new";
+    window.open(meetUrl, "_blank", "noopener,noreferrer");
+    logAuditEvent({
+      userId: currentUser.id,
+      username: currentUser.username,
+      role: currentUser.role,
+      action: "GOOGLE_MEET_STARTED",
+      resource: `Candidate #${candidate.id} (${candidate.name})`,
+      details: `Started real Google Meet video conference with ${candidate.name}`,
+      severity: "info",
+      ip: "127.0.0.1",
+    });
+    toast.success(`Google Meet opened for ${candidate.name}!`);
+  };
   const targetJob = jobs.find((j) => j.id === candidate.jobId) || jobs[0]!;
   const s = candidate.screening;
 
@@ -155,14 +174,28 @@ export function CandidateCard({
 
       {/* Card Action Toolbar */}
       <div className="mt-3 flex items-center justify-between pt-2 border-t text-[11px]">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onViewEvaluation(candidate)}
-          className="h-7 px-2 text-[11px] text-primary hover:text-primary hover:bg-primary/10 flex items-center gap-1"
-        >
-          <Eye className="h-3.5 w-3.5" /> Resume & AI Review
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onViewEvaluation(candidate)}
+            className="h-7 px-2 text-[11px] text-primary hover:text-primary hover:bg-primary/10 flex items-center gap-1"
+          >
+            <Eye className="h-3.5 w-3.5" /> Review
+          </Button>
+
+          {(candidate.stage === "Interview" || candidate.interviews.length > 0) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleStartGoogleMeet}
+              className="h-7 px-2 text-[10px] gap-1 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+              title="Start Google Meet"
+            >
+              <Video className="h-3 w-3 text-emerald-600" /> Meet
+            </Button>
+          )}
+        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -170,7 +203,15 @@ export function CandidateCard({
               <MoreVertical className="h-3.5 w-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 text-xs">
+          <DropdownMenuContent align="end" className="w-48 text-xs">
+            <DropdownMenuItem
+              onClick={handleStartGoogleMeet}
+              className="cursor-pointer text-emerald-700 dark:text-emerald-400 font-semibold"
+            >
+              <Video className="mr-2 h-3.5 w-3.5 text-emerald-600" />
+              <span>Start Google Meet</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground">
               Quick Move Stage
             </DropdownMenuLabel>

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import {
   Brain,
+  Camera,
   Download,
   Edit3,
+  Eye,
   FileCheck,
   FileText,
+  Image as ImageIcon,
   Save,
   Sparkles,
   UploadCloud,
@@ -17,9 +20,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { generatePictureCv } from "@/lib/cvPictureGenerator";
 import { useAts } from "@/lib/ats-store";
 import { CvAnalyzerModal } from "./CvAnalyzerModal";
 import { CvImproverModal } from "./CvImproverModal";
+import { PictureCvPreviewModal } from "./PictureCvPreviewModal";
+import { ProfilePictureModal } from "./ProfilePictureModal";
 
 export function CandidateCvView() {
   const { currentUser, updateCandidateProfile } = useAts();
@@ -27,6 +33,10 @@ export function CandidateCvView() {
   const [isEditing, setIsEditing] = useState(false);
   const [analyzerOpen, setAnalyzerOpen] = useState(false);
   const [improverOpen, setImproverOpen] = useState(false);
+  const [profilePictureOpen, setProfilePictureOpen] = useState(false);
+  const [pictureCvPreviewOpen, setPictureCvPreviewOpen] = useState(false);
+  const [pictureCvDataUrl, setPictureCvDataUrl] = useState<string | null>(null);
+  const [isGeneratingPic, setIsGeneratingPic] = useState(false);
 
   // Form states
   const [name, setName] = useState(currentUser.name);
@@ -100,6 +110,40 @@ Generated On: ${new Date().toLocaleDateString("en-US", { year: "numeric", month:
     link.click();
     URL.revokeObjectURL(url);
     toast.success("CV Document downloaded successfully!");
+  };
+
+  const handleGeneratePictureCv = async (previewOnly = false) => {
+    try {
+      setIsGeneratingPic(true);
+      const dataUrl = await generatePictureCv({
+        name: currentUser.name,
+        title: currentUser.title,
+        city: currentUser.city,
+        phone: currentUser.phone || "+92 300 1234567",
+        email: currentUser.email,
+        username: currentUser.username,
+        bio: currentUser.bio || bio,
+        expectedSalaryPKR: Number(expectedSalary) || currentUser.expectedSalaryPKR || 250000,
+        avatarUrl: currentUser.avatar,
+        skills: ["React.js", "TypeScript", "Node.js", "PostgreSQL", "Next.js", "Tailwind CSS", "Docker", "REST APIs", "CI/CD Pipelines"],
+      });
+      setPictureCvDataUrl(dataUrl);
+
+      if (previewOnly) {
+        setPictureCvPreviewOpen(true);
+      } else {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `${currentUser.name.replace(/\s+/g, "_")}_CV_PictureFormat.png`;
+        link.click();
+        toast.success("Picture CV (PNG) generated and downloaded successfully!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to render picture CV format");
+    } finally {
+      setIsGeneratingPic(false);
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,16 +223,36 @@ Generated On: ${new Date().toLocaleDateString("en-US", { year: "numeric", month:
         {/* Left Column: Profile Card & Quick Actions */}
         <div className="space-y-4">
           <div className="rounded-2xl border bg-card p-5 shadow-xs text-center space-y-3">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="h-20 w-20 rounded-full border-2 border-primary/20 bg-muted mx-auto object-cover shadow-xs"
-            />
+            <div className="relative inline-block mx-auto group">
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.name}
+                className="h-24 w-24 rounded-full border-2 border-primary/30 bg-muted mx-auto object-cover shadow-sm transition group-hover:opacity-90"
+              />
+              <button
+                type="button"
+                onClick={() => setProfilePictureOpen(true)}
+                className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-primary text-primary-foreground shadow-md flex items-center justify-center hover:scale-105 transition"
+                title="Update Profile Picture"
+              >
+                <Camera className="h-3.5 w-3.5" />
+              </button>
+            </div>
             <div>
               <h3 className="font-bold text-base text-foreground">{currentUser.name}</h3>
               <p className="text-xs text-primary font-medium">{currentUser.title}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{currentUser.city}, Pakistan</p>
             </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setProfilePictureOpen(true)}
+              className="w-full text-xs gap-1.5 h-8 border-dashed border-primary/40 hover:border-primary"
+            >
+              <Camera className="h-3.5 w-3.5 text-primary" /> Update Profile Picture
+            </Button>
 
             <div className="pt-2 border-t text-left space-y-1.5 text-xs">
               <div className="flex justify-between">
@@ -243,14 +307,35 @@ Generated On: ${new Date().toLocaleDateString("en-US", { year: "numeric", month:
                 <h3 className="font-bold text-sm text-foreground">Curriculum Vitae Details</h3>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  disabled={isGeneratingPic}
+                  onClick={() => handleGeneratePictureCv(false)}
+                  className="h-8 text-xs gap-1.5 bg-[#4b4038] hover:bg-[#3d332d] text-[#fbf9f6] border border-[#9a8678]/40 font-semibold shadow-xs"
+                >
+                  <ImageIcon className="h-3.5 w-3.5 text-[#caaa98]" />
+                  {isGeneratingPic ? "Generating..." : "Download Picture CV (PNG)"}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isGeneratingPic}
+                  onClick={() => handleGeneratePictureCv(true)}
+                  className="h-8 text-xs gap-1.5 border-border shadow-2xs"
+                >
+                  <Eye className="h-3.5 w-3.5 text-primary" /> Preview Picture CV
+                </Button>
+
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleDownloadCv}
                   className="h-8 text-xs gap-1.5 border-border shadow-2xs"
                 >
-                  <Download className="h-3.5 w-3.5" /> Download CV
+                  <Download className="h-3.5 w-3.5" /> Text Dossier
                 </Button>
 
                 <Button
@@ -380,6 +465,18 @@ Generated On: ${new Date().toLocaleDateString("en-US", { year: "numeric", month:
       {/* AI CV Modals */}
       <CvAnalyzerModal open={analyzerOpen} onOpenChange={setAnalyzerOpen} />
       <CvImproverModal job={null} open={improverOpen} onOpenChange={setImproverOpen} />
+
+      {/* Picture CV & Profile Picture Modals */}
+      <ProfilePictureModal
+        open={profilePictureOpen}
+        onOpenChange={setProfilePictureOpen}
+      />
+      <PictureCvPreviewModal
+        open={pictureCvPreviewOpen}
+        onOpenChange={setPictureCvPreviewOpen}
+        imageUrl={pictureCvDataUrl}
+        candidateName={currentUser.name}
+      />
     </div>
   );
 }

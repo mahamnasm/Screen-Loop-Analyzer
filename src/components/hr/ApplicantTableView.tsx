@@ -10,7 +10,9 @@ import {
   MoreHorizontal,
   Search,
   Sparkles,
+  Video,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,13 +38,29 @@ import { useAts } from "@/lib/ats-store";
 import { CandidateEvaluationModal } from "./CandidateEvaluationModal";
 
 export function ApplicantTableView() {
-  const { isolatedCandidates, isolatedJobs, moveCandidate } = useAts();
+  const { isolatedCandidates, isolatedJobs, moveCandidate, currentUser, logAuditEvent } = useAts();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<"score" | "date" | "name">("score");
   const [sortAsc, setSortAsc] = useState(false);
+
+  const handleStartGoogleMeet = (c: Candidate) => {
+    const meetUrl = "https://meet.google.com/new";
+    window.open(meetUrl, "_blank", "noopener,noreferrer");
+    logAuditEvent({
+      userId: currentUser.id,
+      username: currentUser.username,
+      role: currentUser.role,
+      action: "GOOGLE_MEET_STARTED",
+      resource: `Candidate #${c.id} (${c.name})`,
+      details: `Started real Google Meet video call with ${c.name}`,
+      severity: "info",
+      ip: "127.0.0.1",
+    });
+    toast.success(`Google Meet launched for ${c.name}!`);
+  };
 
   // Selected candidate for modal review
   const [evalCandidate, setEvalCandidate] = useState<Candidate | null>(null);
@@ -254,17 +272,30 @@ export function ApplicantTableView() {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        setEvalCandidate(c);
-                        setEvalOpen(true);
-                      }}
-                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
-                    >
-                      <Eye className="h-3.5 w-3.5" /> Review
-                    </Button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleStartGoogleMeet(c)}
+                        className="h-7 px-2 text-xs gap-1 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                        title={`Start Google Meet with ${c.name}`}
+                      >
+                        <Video className="h-3 w-3 text-emerald-600" />
+                        <span className="hidden sm:inline">Meet</span>
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEvalCandidate(c);
+                          setEvalOpen(true);
+                        }}
+                        className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                      >
+                        <Eye className="h-3.5 w-3.5" /> Review
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );

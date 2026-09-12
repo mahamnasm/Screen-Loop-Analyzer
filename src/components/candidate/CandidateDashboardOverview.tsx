@@ -220,7 +220,7 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
         {/* Profile Completion */}
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs space-y-2.5 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">
               Profile Completeness
             </span>
             <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
@@ -228,7 +228,7 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
             </div>
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-bold text-[#202940]">
+            <span className="font-display text-3xl font-bold text-[#202940] dark:text-white">
               {profileCompletion}%
             </span>
           </div>
@@ -241,7 +241,7 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
         {/* CV Score Card */}
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs space-y-2.5 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">
               AI CV Benchmark
             </span>
             <div className="h-8 w-8 rounded-xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center group-hover:scale-110 transition border border-emerald-500/20">
@@ -258,7 +258,7 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
             variant="ghost"
             size="sm"
             onClick={() => setCvAnalyzerOpen(true)}
-            className="h-6 p-0 text-xs text-[#202940] hover:text-[#caaa98] hover:underline justify-start font-semibold"
+            className="h-6 p-0 text-xs text-primary dark:text-[#caaa98] hover:underline justify-start font-semibold"
           >
             Review & Improve CV →
           </Button>
@@ -267,21 +267,21 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
         {/* Active Applications */}
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs space-y-2.5 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">
               My Applications
             </span>
             <div className="h-8 w-8 rounded-xl bg-[#202940]/5 text-[#202940] flex items-center justify-center group-hover:scale-110 transition border border-[#202940]/10">
               <Layers className="h-4 w-4" />
             </div>
           </div>
-          <p className="font-display text-3xl font-bold text-[#202940]">
+          <p className="font-display text-3xl font-bold text-[#202940] dark:text-white">
             {candidateApplications.length}
           </p>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigateTab("applications")}
-            className="h-6 p-0 text-xs text-[#202940] hover:text-[#caaa98] hover:underline justify-start font-semibold"
+            className="h-6 p-0 text-xs text-primary dark:text-[#caaa98] hover:underline justify-start font-semibold"
           >
             Track Application Status →
           </Button>
@@ -290,21 +290,21 @@ export function CandidateDashboardOverview({ onNavigateTab }: CandidateDashboard
         {/* Saved Jobs */}
         <div className="careerbridge-card-elevation rounded-2xl border border-[#e2d8cd] bg-card p-5 shadow-xs space-y-2.5 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#4b4038] uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#4b4038] dark:text-[#caaa98] uppercase tracking-wider">
               Saved Roles
             </span>
             <div className="h-8 w-8 rounded-xl bg-amber-500/10 text-amber-800 flex items-center justify-center group-hover:scale-110 transition border border-amber-500/20">
               <BookmarkCheck className="h-4 w-4" />
             </div>
           </div>
-          <p className="font-display text-3xl font-bold text-[#202940]">
+          <p className="font-display text-3xl font-bold text-[#202940] dark:text-white">
             {savedJobs.length}
           </p>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onNavigateTab("saved")}
-            className="h-6 p-0 text-xs text-[#202940] hover:text-[#caaa98] hover:underline justify-start font-semibold"
+            className="h-6 p-0 text-xs text-primary dark:text-[#caaa98] hover:underline justify-start font-semibold"
           >
             View Bookmarked Jobs →
           </Button>
