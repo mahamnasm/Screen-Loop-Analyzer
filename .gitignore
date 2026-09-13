@@ -31,5 +31,11 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+
+# Android
+local.properties
+.gradle/
+build/
+*.apk
+*.aab
