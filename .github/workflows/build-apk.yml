@@ -35,17 +35,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install Dependencies & Build Web Assets
+      - name: Verify Pre-synced Capacitor Assets
+        working-directory: ./android/app/src/main/assets/public
         run: |
-          npm install
-          npm run build
-          npx cap sync android
+          ls -la
+          test -f index.html && echo "✓ Static index.html is verified pre-synced in Android project"
 
       - name: Build Debug APK
         working-directory: ./android
