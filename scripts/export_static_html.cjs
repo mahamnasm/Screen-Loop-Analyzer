@@ -33,6 +33,8 @@ server.stderr.on('data', (d) => {
   console.error('[server err]', d.toString());
 });
 
+let captured = false;
+
 setTimeout(() => {
   if (!serverReady) {
     captureHtml();
@@ -40,6 +42,8 @@ setTimeout(() => {
 }, 2500);
 
 function captureHtml() {
+  if (captured) return;
+  captured = true;
   http.get(`http://127.0.0.1:${PORT}/`, (res) => {
     let body = '';
     res.on('data', (c) => body += c);

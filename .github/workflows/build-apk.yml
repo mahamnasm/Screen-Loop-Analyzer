@@ -43,7 +43,7 @@ jobs:
 
       - name: Install Dependencies & Build Web Assets
         run: |
-          npm ci || npm install
+          npm install
           npm run build
           npx cap sync android
 
