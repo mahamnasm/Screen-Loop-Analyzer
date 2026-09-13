@@ -7,6 +7,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-apk:
     name: Build Screenloop ATS Mobile APK
@@ -25,34 +28,39 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | sdkmanager --licenses || true
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.2
+
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Install NPM Dependencies & Build Web Assets
+      - name: Install Dependencies & Build Web Assets
         run: |
           npm ci || npm install
           npm run build
 
-      - name: Generate Gradle Wrapper if Missing
+      - name: Generate Wrapper & Build Debug APK
         working-directory: ./android
         run: |
-          if [ ! -f gradlew ]; then
-            gradle wrapper --gradle-version 8.2
-          fi
+          gradle wrapper --gradle-version 8.2
           chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace --info
 
-      - name: Build Android Debug APK
-        working-directory: ./android
-        run: ./gradlew assembleDebug --stacktrace
-
-      - name: Rename APK for Easy Sharing
+      - name: Prepare APK Output
         working-directory: ./android/app/build/outputs/apk/debug
         run: |
           cp app-debug.apk Screenloop-ATS-Mobile-v1.0.apk
           echo "APK generated successfully at $(pwd)/Screenloop-ATS-Mobile-v1.0.apk"
+          ls -lh
 
       - name: Upload APK as Workflow Artifact
         uses: actions/upload-artifact@v4
@@ -61,14 +69,14 @@ jobs:
           path: android/app/build/outputs/apk/debug/Screenloop-ATS-Mobile-v1.0.apk
           retention-days: 30
 
-      - name: Create GitHub Release with APK Binary
+      - name: Publish GitHub Release with APK
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0-mobile-apk
-          name: "Screenloop ATS v1.0.0 Mobile Android App"
+          tag_name: v1.0.0-apk
+          name: "Screenloop ATS v1.0.0 Mobile Android App (.APK)"
           body: |
-            ## 📱 Screenloop ATS Mobile Application (.apk)
+            ## 📱 Screenloop ATS Android Mobile Application
             
             Download and install the official Screenloop ATS mobile APK on your Android phone!
             
@@ -78,8 +86,8 @@ jobs:
             - **Company Workspace**: Enterprise requisitions, benefits overview, and team administration.
             - **Admin Console**: Platform analytics, RBAC governance, and audit trails.
             
-            ### 📥 Download:
-            Download **`Screenloop-ATS-Mobile-v1.0.apk`** below and tap to install on your Android device.
+            ### 📥 Download APK:
+            Download **`Screenloop-ATS-Mobile-v1.0.apk`** below to install on your Android device.
           files: android/app/build/outputs/apk/debug/Screenloop-ATS-Mobile-v1.0.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

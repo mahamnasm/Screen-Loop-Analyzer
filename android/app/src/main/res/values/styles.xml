@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ScreenloopATS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary_navy</item>
@@ -7,8 +8,6 @@
     </style>
 
     <style name="Theme.ScreenloopATS.Fullscreen" parent="Theme.ScreenloopATS">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
         <item name="android:statusBarColor">@color/primary_navy</item>
         <item name="android:navigationBarColor">@color/primary_navy</item>
     </style>
