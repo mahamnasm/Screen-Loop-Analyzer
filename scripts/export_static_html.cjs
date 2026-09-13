@@ -3,7 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = 'd:/Vibe Coading Projects/Resume Analyzer/candid-canvas-board-main';
+const rootDir = path.resolve(__dirname, '..');
 const serverScript = path.join(rootDir, '.output/server/index.mjs');
 const outputPublic = path.join(rootDir, '.output/public');
 const distDir = path.join(rootDir, 'dist');
