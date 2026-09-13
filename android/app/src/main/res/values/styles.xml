@@ -1,0 +1,15 @@
+<resources>
+    <style name="Theme.ScreenloopATS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_navy</item>
+        <item name="colorPrimaryDark">@color/primary_navy_dark</item>
+        <item name="colorAccent">@color/accent_almond</item>
+        <item name="android:windowBackground">@color/primary_navy</item>
+    </style>
+
+    <style name="Theme.ScreenloopATS.Fullscreen" parent="Theme.ScreenloopATS">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:statusBarColor">@color/primary_navy</item>
+        <item name="android:navigationBarColor">@color/primary_navy</item>
+    </style>
+</resources>

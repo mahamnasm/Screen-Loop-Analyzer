@@ -15,6 +15,7 @@ import {
   Search,
   ShieldAlert,
   Sparkles,
+  Smartphone,
   UserCheck,
   Users,
 } from "lucide-react";
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { CareerBridgeLogo } from "@/components/shared/CareerBridgeBranding";
+import { MobileAppDownloadModal } from "@/components/shared/MobileAppDownloadModal";
 import { useAts, type UserRole } from "@/lib/ats-store";
 
 interface NavbarProps {
@@ -58,6 +60,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileModalOpen, setMobileModalOpen] = useState(false);
 
   // Keyboard shortcut ⌘K / Ctrl+K listener for quick search
   useEffect(() => {
@@ -245,6 +248,18 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
 
           {/* User Profile Management & Actions */}
           <div className="flex items-center gap-2">
+            {/* Mobile App .APK Download button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setMobileModalOpen(true)}
+              className="h-8 text-xs gap-1.5 px-2.5 rounded-full border-[#caaa98]/60 text-[#4b4038] dark:text-[#caaa98] hover:bg-primary/5 font-semibold shadow-2xs"
+              title="Mobile Application & Android APK"
+            >
+              <Smartphone className="h-3.5 w-3.5 text-primary" />
+              <span className="hidden sm:inline">Mobile App (.APK)</span>
+            </Button>
+
             {/* Mobile search button */}
             <Button
               variant="outline"
@@ -291,6 +306,13 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sign Out</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setMobileModalOpen(true)}
+                  className="cursor-pointer text-primary focus:text-primary font-semibold"
+                >
+                  <Smartphone className="mr-2 h-4 w-4" />
+                  <span>Download Mobile APK</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={restorePlatformDefaults}
@@ -376,6 +398,12 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Mobile Application & APK Modal */}
+      <MobileAppDownloadModal
+        open={mobileModalOpen}
+        onOpenChange={setMobileModalOpen}
+      />
     </>
   );
 }

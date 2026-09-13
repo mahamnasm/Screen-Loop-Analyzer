@@ -22,6 +22,7 @@ import {
   Menu,
   Shield,
   ShieldAlert,
+  Smartphone,
   Sparkles,
   UserCheck,
   Users,
@@ -32,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { CareerBridgeLogo } from "@/components/shared/CareerBridgeBranding";
+import { MobileAppDownloadModal } from "@/components/shared/MobileAppDownloadModal";
 import { useAts, type UserRole } from "@/lib/ats-store";
 
 interface SidebarProps {
@@ -63,6 +65,7 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [apkModalOpen, setApkModalOpen] = useState(false);
 
   // Define navigation items per role
   const getNavItems = (role: UserRole): { group: string; items: NavItem[] }[] => {
@@ -428,6 +431,14 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setApkModalOpen(true)}
+              className="w-full h-7 text-[11px] gap-1.5 px-2 border-[#caaa98]/40 bg-white/50 dark:bg-card/50 text-[#4b4038] dark:text-[#caaa98] hover:bg-primary/10 transition font-bold"
+            >
+              <Smartphone className="h-3 w-3 text-primary" /> Mobile App (.APK)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={logout}
               className="w-full h-7 text-[11px] gap-1.5 px-2 border-[#e2d8cd] dark:border-[#2d3854] text-[#4b4038] dark:text-[#caaa98] hover:text-destructive hover:bg-destructive/10 transition font-bold"
             >
@@ -458,6 +469,11 @@ export function AppSidebar({ activeTab, onTabChange }: SidebarProps) {
           </SheetContent>
         </Sheet>
       </div>
+
+      <MobileAppDownloadModal
+        open={apkModalOpen}
+        onOpenChange={setApkModalOpen}
+      />
     </>
   );
 }

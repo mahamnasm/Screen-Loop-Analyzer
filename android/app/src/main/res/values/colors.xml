@@ -1,0 +1,7 @@
+<resources>
+    <color name="primary_navy">#202940</color>
+    <color name="primary_navy_dark">#182035</color>
+    <color name="accent_almond">#CAAA98</color>
+    <color name="background_light">#FBF9F6</color>
+    <color name="white">#FFFFFF</color>
+</resources>
