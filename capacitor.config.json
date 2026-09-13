@@ -1,0 +1,9 @@
+﻿{
+  "appId": "com.screenloop.ats",
+  "appName": "Screenloop ATS",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}

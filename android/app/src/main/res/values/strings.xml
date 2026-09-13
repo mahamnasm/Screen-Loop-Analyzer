@@ -1,4 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">Screenloop ATS</string>
-    <string name="app_subtitle">Applicant Tracking &amp; AI Evaluation</string>
+    <string name="title_activity_main">Screenloop ATS</string>
+    <string name="package_name">com.screenloop.ats</string>
+    <string name="custom_url_scheme">com.screenloop.ats</string>
 </resources>

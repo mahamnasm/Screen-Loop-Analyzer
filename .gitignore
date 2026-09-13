@@ -39,3 +39,4 @@ local.properties
 build/
 *.apk
 *.aab
+android_custom_backup/
